@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <title>SCALE UP · by Orynto Labs</title>
+    <meta name="description" content="Merge your way from a hydrogen atom to the observable universe. A size-ordered merge puzzle by Orynto Labs." />
+    <meta name="theme-color" content="#07061A" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="SCALE UP" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta property="og:title" content="SCALE UP" />
+    <meta property="og:description" content="From an atom to the observable universe. Can you scale all the way up?" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <div id="stars" class="stars" aria-hidden="true"></div>
+
+    <div id="app" class="app">
+      <header class="top">
+        <button id="logo" class="logo" aria-label="Menu"><span>SCALE</span><span class="up">UP</span></button>
+        <div class="scores">
+          <div class="sbox" id="score-box"><label>Score</label><b id="score">0</b></div>
+          <div class="sbox"><label>Best</label><b id="best">0</b></div>
+        </div>
+      </header>
+
+      <div class="progress">
+        <div id="biggest" class="biggest"></div>
+        <div class="ladder-bar"><i id="ladder-fill"></i></div>
+      </div>
+
+      <main id="stage" class="stage">
+        <div id="board" class="board">
+          <div class="cells">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <div id="tiles" class="tiles"></div>
+        </div>
+      </main>
+
+      <div id="next" class="next-goal"></div>
+
+      <nav class="bottom">
+        <button id="btn-undo" class="nb"><span class="bi">↶</span><span class="nl">Undo</span><small class="badge">1 left</small></button>
+        <button id="btn-disc" class="nb"><span class="bi">🔭</span><span class="nl">Discoveries</span><small class="badge">0/19</small></button>
+        <button id="btn-sound" class="nb"><span class="bi">🔊</span><span class="nl">Sound</span></button>
+        <button id="btn-settings" class="nb"><span class="bi">⚙️</span><span class="nl">Settings</span></button>
+      </nav>
+    </div>
+
+    <canvas id="fx" class="fx" aria-hidden="true"></canvas>
+    <div id="banner" class="banner" role="status"></div>
+    <div id="overlay-root"></div>
+    <div id="toast" class="toast" role="status"></div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
