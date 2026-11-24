@@ -1,6 +1,6 @@
 import { iconHTML } from '../data/icons';
 import { TIERS, conversions, fmt, jumpText, tierInfo, timesAtom, withArticle } from '../data/tiers';
-import { converterHref } from '../config';
+import { INSTAGRAM_HANDLE, INSTAGRAM_URL, converterHref } from '../config';
 import { MAX_TIER } from '../logic/board';
 import { type ModalHandle, openModal } from './modal';
 
@@ -11,6 +11,14 @@ const swatch = (tier: number) => {
 
 const orb = (tier: number, cls = '') =>
   `<div class="orb ${tier >= 17 ? 'cosmic' : ''} ${cls}" style="${swatch(tier)}">${iconHTML(tierInfo(tier).icon)}</div>`;
+
+const IG_ICON =
+  '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>';
+
+/** "Made by Orynto Labs" credit with the Instagram link. */
+export const byline = (prefix = '') =>
+  `<div class="byline">${prefix}Made by <b>Orynto Labs</b>` +
+  `<a class="ig" href="${INSTAGRAM_URL}" target="_blank" rel="noopener">${IG_ICON}${INSTAGRAM_HANDLE}</a></div>`;
 
 const converterLine = () =>
   `<a class="converter-link" href="${converterHref()}" target="_blank" rel="noopener">Convert anything → <b>Orynto Unit Converter</b></a>`;
@@ -106,7 +114,7 @@ export function gameOverScreen(o: {
        <button class="btn" data-act="share">Share</button>
        ${o.canInstall ? '<button class="btn ghost slim" data-act="install">📲 Install to play offline</button>' : ''}
      </div>
-     <div class="byline">by Orynto Labs</div>`,
+     ${byline()}`,
     { className: 'end', dismissable: false },
   );
   wire(m, { undo: o.onUndo, again: o.onAgain, share: o.onShare, install: o.onInstall });
@@ -126,7 +134,7 @@ export function winScreen(o: { score: number; onContinue: () => void; onAgain: (
        <button class="btn" data-act="share">Share</button>
        <button class="btn ghost" data-act="again">New game</button>
      </div>
-     <div class="byline">by Orynto Labs</div>`,
+     ${byline()}`,
     { className: 'end win', dismissable: false },
   );
   wire(m, { cont: o.onContinue, again: o.onAgain, share: o.onShare });
@@ -161,10 +169,11 @@ export function settingsScreen(o: {
        ${o.canInstall ? '<button class="row accent" data-act="install"><span>📲 Install app</span><i>›</i></button>' : ''}
        <button class="row" data-act="new"><span>🔄 New game</span><i>›</i></button>
        <button class="row" data-act="tut"><span>❓ How to play</span><i>›</i></button>
+       <a class="row" href="${INSTAGRAM_URL}" target="_blank" rel="noopener"><span>📸 Follow ${INSTAGRAM_HANDLE}</span><i>›</i></a>
        <button class="row danger" data-act="reset"><span>🗑️ Reset all progress</span><i>›</i></button>
      </div>
      ${converterLine()}
-     <div class="byline">SCALE UP · by Orynto Labs</div>`,
+     ${byline('SCALE UP · ')}`,
     { className: 'settings' },
   );
   m.el.querySelector<HTMLInputElement>('#set-sound')!.addEventListener('change', (e) => o.onSound((e.target as HTMLInputElement).checked));
@@ -240,7 +249,7 @@ export function startScreen(o: { canContinue: boolean; best: number; found: numb
         <button class="btn install-cta" data-act="install" hidden>📲 Install app · plays offline</button>
       </div>
     </div>
-    <div class="byline">by Orynto Labs</div>`;
+    ${byline()}`;
   const acts: Record<string, () => void> = { play: o.onPlay, new: o.onNew, disc: o.onDiscoveries, install: o.onInstall };
   el.querySelectorAll<HTMLElement>('[data-act]').forEach((b) => b.addEventListener('click', () => acts[b.dataset.act!]()));
   return el;
