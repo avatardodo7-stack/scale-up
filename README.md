@@ -33,4 +33,5 @@ tests/         Vitest specs
 ## Configuration
 
 - **Converter link:** set `CONVERTER_URL` in `src/config.ts`.
+- **Live:** https://scale-up-olive.vercel.app (auto-deploys from `main`)
 - **Brand colors:** `--primary` and `--accent` at the top of `src/styles/main.css`.
