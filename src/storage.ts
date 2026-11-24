@@ -38,5 +38,10 @@ export const store = {
   setGame: (g: GameState) => write('game', g),
   clearGame: () => remove('game'),
 
+  visits: () => read<number>('visits', 0),
+  bumpVisits: () => write('visits', read<number>('visits', 0) + 1),
+  installNudged: () => read<boolean>('installNudged', false),
+  setInstallNudged: () => write('installNudged', true),
+
   resetAll: () => ['best', 'discovered', 'game', 'tutorial'].forEach(remove),
 };

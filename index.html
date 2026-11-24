@@ -58,7 +58,13 @@
     <canvas id="fx" class="fx" aria-hidden="true"></canvas>
     <div id="banner" class="banner" role="status"></div>
     <div id="overlay-root"></div>
+    <div class="rotate" aria-hidden="true"><span>📱</span><b>Turn your phone upright</b><small>SCALE UP plays in portrait</small></div>
     <div id="toast" class="toast" role="status"></div>
+    <div id="install-pill" class="install-pill" role="dialog" aria-label="Install SCALE UP">
+      <img src="./icons/icon-192.png" alt="" width="36" height="36">
+      <button class="pill-main" data-open><b>Install SCALE UP</b><small>Full screen &amp; offline play</small></button>
+      <button class="pill-x" data-dismiss aria-label="Dismiss">✕</button>
+    </div>
 
     <script type="module" src="/src/main.ts"></script>
   </body>

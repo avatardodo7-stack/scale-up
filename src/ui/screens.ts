@@ -91,8 +91,8 @@ export function discoveriesScreen(found: Set<number>): ModalHandle {
 // ---------------------------------------------------------------- game over / win
 
 export function gameOverScreen(o: {
-  score: number; best: number; newBest: boolean; topTier: number; canUndo: boolean;
-  onUndo: () => void; onAgain: () => void; onShare: () => void;
+  score: number; best: number; newBest: boolean; topTier: number; canUndo: boolean; canInstall: boolean;
+  onUndo: () => void; onAgain: () => void; onShare: () => void; onInstall: () => void;
 }): ModalHandle {
   const t = tierInfo(o.topTier);
   const m = openModal(
@@ -104,11 +104,12 @@ export function gameOverScreen(o: {
        ${o.canUndo ? '<button class="btn ghost" data-act="undo">↶ Use your undo</button>' : ''}
        <button class="btn primary" data-act="again">Play again</button>
        <button class="btn" data-act="share">Share</button>
+       ${o.canInstall ? '<button class="btn ghost slim" data-act="install">📲 Install to play offline</button>' : ''}
      </div>
      <div class="byline">by Orynto Labs</div>`,
     { className: 'end', dismissable: false },
   );
-  wire(m, { undo: o.onUndo, again: o.onAgain, share: o.onShare });
+  wire(m, { undo: o.onUndo, again: o.onAgain, share: o.onShare, install: o.onInstall });
   return m;
 }
 
@@ -136,7 +137,7 @@ function wire(m: ModalHandle, acts: Record<string, () => void>): void {
   m.el.querySelectorAll<HTMLElement>('[data-act]').forEach((b) =>
     b.addEventListener('click', () => {
       const fn = acts[b.dataset.act!];
-      if (b.dataset.act !== 'share') m.close();
+      if (b.dataset.act !== 'share' && b.dataset.act !== 'install') m.close();
       fn?.();
     }),
   );
@@ -147,7 +148,7 @@ function wire(m: ModalHandle, acts: Record<string, () => void>): void {
 export function settingsScreen(o: {
   sound: boolean; haptics: boolean;
   onSound: (v: boolean) => void; onHaptics: (v: boolean) => void;
-  onNewGame: () => void; onTutorial: () => void; onReset: () => void;
+  onNewGame: () => void; onTutorial: () => void; onReset: () => void; canInstall: boolean; onInstall: () => void;
 }): ModalHandle {
   const tog = (id: string, label: string, on: boolean) =>
     `<label class="row"><span>${label}</span><input type="checkbox" id="${id}" ${on ? 'checked' : ''}><i class="switch"></i></label>`;
@@ -157,6 +158,7 @@ export function settingsScreen(o: {
      <div class="list">
        ${tog('set-sound', '🔊 Sound', o.sound)}
        ${tog('set-haptics', '📳 Vibration', o.haptics)}
+       ${o.canInstall ? '<button class="row accent" data-act="install"><span>📲 Install app</span><i>›</i></button>' : ''}
        <button class="row" data-act="new"><span>🔄 New game</span><i>›</i></button>
        <button class="row" data-act="tut"><span>❓ How to play</span><i>›</i></button>
        <button class="row danger" data-act="reset"><span>🗑️ Reset all progress</span><i>›</i></button>
@@ -168,6 +170,7 @@ export function settingsScreen(o: {
   m.el.querySelector<HTMLInputElement>('#set-sound')!.addEventListener('change', (e) => o.onSound((e.target as HTMLInputElement).checked));
   m.el.querySelector<HTMLInputElement>('#set-haptics')!.addEventListener('change', (e) => o.onHaptics((e.target as HTMLInputElement).checked));
   m.el.querySelector('[data-act="new"]')!.addEventListener('click', () => { m.close(); o.onNewGame(); });
+  m.el.querySelector('[data-act="install"]')?.addEventListener('click', () => { m.close(); o.onInstall(); });
   m.el.querySelector('[data-act="tut"]')!.addEventListener('click', () => { m.close(); o.onTutorial(); });
   const reset = m.el.querySelector<HTMLElement>('[data-act="reset"]')!;
   reset.addEventListener('click', () => {
@@ -217,7 +220,7 @@ export function tutorial(onDone: () => void): void {
 
 // ---------------------------------------------------------------- start screen
 
-export function startScreen(o: { canContinue: boolean; best: number; found: number; onPlay: () => void; onNew: () => void; onDiscoveries: () => void }): HTMLElement {
+export function startScreen(o: { canContinue: boolean; best: number; found: number; onPlay: () => void; onNew: () => void; onDiscoveries: () => void; onInstall: () => void }): HTMLElement {
   const el = document.createElement('div');
   el.className = 'start';
   const ladder = TIERS.map((t) => orb(t.tier)).join('');
@@ -234,10 +237,11 @@ export function startScreen(o: { canContinue: boolean; best: number; found: numb
         <button class="btn primary big" data-act="play">${o.canContinue ? 'Continue' : 'Play'}</button>
         ${o.canContinue ? '<button class="btn" data-act="new">New game</button>' : ''}
         <button class="btn ghost" data-act="disc">Discoveries</button>
+        <button class="btn install-cta" data-act="install" hidden>📲 Install app · plays offline</button>
       </div>
     </div>
     <div class="byline">by Orynto Labs</div>`;
-  const acts: Record<string, () => void> = { play: o.onPlay, new: o.onNew, disc: o.onDiscoveries };
+  const acts: Record<string, () => void> = { play: o.onPlay, new: o.onNew, disc: o.onDiscoveries, install: o.onInstall };
   el.querySelectorAll<HTMLElement>('[data-act]').forEach((b) => b.addEventListener('click', () => acts[b.dataset.act!]()));
   return el;
 }

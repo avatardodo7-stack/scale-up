@@ -10,6 +10,7 @@ import { bindInput } from './input/input';
 import { buzz, setHaptics, sfx } from './audio/sfx';
 import { store } from './storage';
 import { closeAll, modalOpen, toast } from './ui/modal';
+import { canOfferInstall, initInstall, onInstallChange, showInstall } from './ui/install';
 import {
   discoveriesScreen, discoveryBanner, gameOverScreen, infoCard, settingsScreen, shareText, startScreen, tutorial, winScreen,
 } from './ui/screens';
@@ -211,9 +212,11 @@ function showGameOver(): void {
     newBest: isBest,
     topTier: topTier(),
     canUndo: canUndo(state),
+    canInstall: canOfferInstall(),
     onUndo: doUndo,
     onAgain: startNewGame,
     onShare: () => void share(),
+    onInstall: showInstall,
   });
 }
 
@@ -235,6 +238,8 @@ function openSettings(): void {
     onSound: (v) => setSound(v),
     onHaptics: (v) => { settings = { ...settings, haptics: v }; setHaptics(v); store.setSettings(settings); if (v) buzz(15); },
     onNewGame: startNewGame,
+    canInstall: canOfferInstall(),
+    onInstall: showInstall,
     onTutorial: () => tutorial(() => store.setTutorialDone()),
     onReset: () => {
       store.resetAll();
@@ -266,9 +271,33 @@ function showStart(): void {
     onPlay: () => leaveStart(),
     onNew: () => { startNewGame(); leaveStart(); },
     onDiscoveries: () => discoveriesScreen(found),
+    onInstall: showInstall,
   });
   document.body.appendChild(el);
+  syncInstallUI();
 }
+
+// ---------------------------------------------------------------- install
+
+const pill = $('install-pill');
+
+function syncInstallUI(): void {
+  const can = canOfferInstall();
+  document.querySelectorAll<HTMLElement>('.install-cta').forEach((b) => { b.hidden = !can; });
+  if (!can) pill.classList.remove('show');
+}
+
+/** From the second visit on, offer install once with a small dismissible pill. */
+function maybeNudgeInstall(): void {
+  if (!canOfferInstall() || store.installNudged() || store.visits() < 2) return;
+  window.setTimeout(() => { if (canOfferInstall() && !modalOpen()) pill.classList.add('show'); }, 2500);
+}
+
+pill.querySelector('[data-open]')!.addEventListener('click', () => { pill.classList.remove('show'); store.setInstallNudged(); showInstall(); });
+pill.querySelector('[data-dismiss]')!.addEventListener('click', () => { pill.classList.remove('show'); store.setInstallNudged(); });
+initInstall(() => { toast('Installed! Find SCALE UP on your home screen'); syncInstallUI(); });
+onInstallChange(syncInstallUI);
+store.bumpVisits();
 
 function leaveStart(): void {
   sfx.unlock();
@@ -279,6 +308,7 @@ function leaveStart(): void {
   onStart = false;
   if (state.over) startNewGame(); // a finished game was saved: start fresh
   if (!store.tutorialDone()) window.setTimeout(() => tutorial(() => store.setTutorialDone()), 350);
+  else maybeNudgeInstall();
 }
 
 // ---------------------------------------------------------------- wiring

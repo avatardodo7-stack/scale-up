@@ -355,8 +355,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   position: absolute;
   top: 12px;
   right: 12px;
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: var(--panel-2);
   font-size: 14px;
@@ -629,6 +629,61 @@ input:checked + .switch::after { transform: translateX(18px); }
   white-space: nowrap;
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---------------------------------------------------------------- install */
+
+.install .app-icon { display: block; margin: 6px auto 10px; border-radius: 22px; box-shadow: 0 14px 30px -12px rgba(108, 92, 231, 0.9); }
+.perks { list-style: none; display: flex; flex-direction: column; gap: 8px; text-align: left; margin-bottom: 4px; }
+.perks li { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 12px; background: var(--panel); font-size: 14px; font-weight: 700; }
+.perks span { font-size: 18px; width: 22px; text-align: center; }
+.steps { list-style: none; display: flex; flex-direction: column; gap: 10px; text-align: left; margin-top: 14px; }
+.steps li { display: flex; gap: 12px; align-items: center; font-size: 14px; line-height: 1.45; }
+.steps li > b { flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--primary); font-size: 13px; }
+.chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; margin: 0 2px; border-radius: 8px; background: var(--panel-2); font-style: normal; font-weight: 800; white-space: nowrap; vertical-align: middle; }
+.chip svg { color: #4aa3ff; }
+.btn.slim { padding: 10px; font-size: 14px; color: var(--muted); }
+.btn.wide.slim { margin-top: 6px; }
+.btn[hidden] { display: none; }
+.install-cta { border-color: rgba(0, 210, 211, 0.35); color: var(--accent); }
+.list .row.accent { color: var(--accent); }
+
+.install-pill {
+  position: fixed;
+  z-index: 16;
+  left: 50%;
+  bottom: calc(var(--sab) + 84px);
+  width: min(400px, calc(100vw - 32px));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 8px 8px 10px;
+  border-radius: 18px;
+  background: rgba(26, 21, 70, 0.97);
+  border: 1px solid rgba(0, 210, 211, 0.35);
+  box-shadow: 0 18px 40px -14px rgba(0, 0, 0, 0.9);
+  transform: translate(-50%, 30px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 320ms cubic-bezier(0.2, 1.3, 0.4, 1), opacity 200ms;
+}
+.install-pill.show { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
+.install-pill img { border-radius: 10px; flex: none; }
+.pill-main { flex: 1; text-align: left; display: flex; flex-direction: column; padding: 4px 0; }
+.pill-main b { font-size: 14px; font-weight: 900; }
+.pill-main small { font-size: 12px; color: var(--muted); }
+.pill-x { width: 40px; height: 40px; border-radius: 12px; color: var(--muted); flex: none; }
+
+.rotate { display: none; }
+@media (orientation: landscape) and (max-height: 500px) and (pointer: coarse) {
+  .rotate {
+    position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+    background: var(--bg); text-align: center;
+  }
+  .rotate span { font-size: 44px; animation: tilt 1.8s ease-in-out infinite; }
+  .rotate b { font-size: 18px; font-weight: 900; }
+  .rotate small { color: var(--muted); font-size: 13px; }
+}
+@keyframes tilt { 0%, 30% { transform: rotate(-90deg); } 60%, 100% { transform: rotate(0deg); } }
 
 /* ---------------------------------------------------------------- small / short screens */
 
